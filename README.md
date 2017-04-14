@@ -31,6 +31,30 @@ You can set your license key in `CordovaDemo/www/js/index.js`.
 After that, you can build the demo app with `$ cordova build`.  
 To run the demo app in the simulator use `$ cordova emulate`.
 
+Ionic 2
+-----------
+
+1. Create Ionic 2 app (replace `Ionic2Demo` with your app's name) : `ionic start Ionic2Demo blank --v2`
+2. Go into your app's folder: `cd Ionic2Demo`
+3. Add PSPDFKit plugin: `ionic plugin add https://github.com/PSPDFKit/Cordova-iOS.git`
+4. Follow the instructions after adding the PSPDFKit plugin (manually edit the Xcode project).
+5. Set deployment target to iOS 9.0 my adding the following to `config.xml`: `<preference name="deployment-target" value="9.0" />`
+5. Declare `PSPDFKitPlugin` in `src/declarations.d.ts`: `declare var PSPDFKitPlugin: any;`
+6. Present PDF by modifying `src/app/app.component.ts`:
+
+```javascript
+constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+    platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
+      statusBar.styleDefault();
+      splashScreen.hide();
+
+      PSPDFKitPlugin.present('document.pdf', {});
+    });
+}
+```
+
 Usage
 -----------
 
