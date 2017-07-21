@@ -551,6 +551,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
         @"PSPDFViewMode":
 
   @{@"document": @(PSPDFViewModeDocument),
+    @"documentEditor": @(PSPDFViewModeDocumentEditor),
     @"thumbnails": @(PSPDFViewModeThumbnails)},
         
         @"PSPDFPageMode":
@@ -1403,10 +1404,11 @@ static NSString *PSPDFStringFromCGRect(CGRect rect) {
 //    
 //}
 
-//- (void)pdfViewController:(PSPDFViewController *)pdfController didChangeViewMode:(PSPDFViewMode)viewMode
-//{
-//    
-//}
+- (void)pdfViewController:(PSPDFViewController *)pdfController didChangeViewMode:(PSPDFViewMode)viewMode
+{
+    NSString *viewModeJSON = [self enumKeyForValue:viewMode ofType:@"PSPDFViewMode"];
+    [self sendEventWithJSON:[NSString stringWithFormat:@"{type:'didChangeViewMode',viewMode:'%@'}", viewModeJSON]];
+}
 
 - (void)pdfViewControllerWillDismiss:(PSPDFViewController *)pdfController
 {
