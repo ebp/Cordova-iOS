@@ -20,6 +20,7 @@
 @property (nonatomic, strong) PSPDFViewController *pdfController;
 @property (nonatomic, strong) PSPDFDocument *pdfDocument;
 @property (nonatomic, strong) NSDictionary *defaultOptions;
+@property (nonatomic, strong) Class pdfControllerClass;
 
 @end
 
@@ -1033,7 +1034,8 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
         
     // configure controller
     if (!_pdfController) {
-        _pdfController = [[PSPDFViewController alloc] init];
+        Class vcClass = self.pdfControllerClass ? self.pdfControllerClass : PSPDFViewController.class;
+        _pdfController = (PSPDFViewController *)[[vcClass alloc] init];
         _pdfController.delegate = self;
         [_pdfController annotationToolbarController].delegate = self;
         _navigationController = [[UINavigationController alloc] initWithRootViewController:_pdfController];
@@ -1173,6 +1175,19 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
         else {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
         }
+    }
+}
+
+- (void)setViewControllerClass:(CDVInvokedUrlCommand *)command {
+    NSString *className = [command argumentAtIndex:0];
+    Class viewClass = className ? NSClassFromString(className) : nil;
+
+    if (viewClass != nil && [viewClass isSubclassOfClass:PSPDFViewController.class]) {
+        self.pdfControllerClass = viewClass;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    } else {
+        self.pdfControllerClass = nil;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Class '%@' is not a subclass of PSPDFViewController", className]] callbackId:command.callbackId];
     }
 }
 
