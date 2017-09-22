@@ -13,6 +13,7 @@
 #import "PSPDFKitPlugin.h"
 #import <WebKit/WebKit.h>
 #import <PSPDFKit/PSPDFKit.h>
+#import "CustomPDFViewController.h"
 
 @interface PSPDFKitPlugin () <PSPDFViewControllerDelegate, PSPDFFlexibleToolbarContainerDelegate>
 
@@ -1034,6 +1035,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     // configure controller
     if (!_pdfController) {
         _pdfController = [[PSPDFViewController alloc] init];
+        //_pdfController = [[CustomPDFViewController alloc] init];
         _pdfController.delegate = self;
         _pdfController.annotationToolbarController.delegate = self;
         _navigationController = [[UINavigationController alloc] initWithRootViewController:_pdfController];
